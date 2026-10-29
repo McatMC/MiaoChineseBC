@@ -1,0 +1,5 @@
+name: MiaoChineseBC
+main: cn.miaomc.miaochinesebc.MiaoChineseBC
+version: ${project.version}
+author: MiaoMC
+description: BungeeCord 连接日志折叠与控制台汉化

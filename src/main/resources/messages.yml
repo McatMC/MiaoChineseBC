@@ -1,0 +1,206 @@
+# ==========================================================
+#  MiaoChineseBC 文本；支持 & 颜色代码与 &#RRGGBB 十六进制颜色
+#
+#  通用占位符：
+#    {who} 来源描述（见 who）   {stage} 连接阶段（见 stage）
+#    {ip} {port} {player} {server} 来源 IP、端口、玩家名、子服名
+#    {version} 客户端版本   {protocol} 协议号   {host} 客户端填写的服务器地址
+#    {raw} BungeeCord 原始的连接描述
+#  各类日志的专属占位符写在对应格式旁边
+# ==========================================================
+
+# 每种日志的输出格式，键名与 config.yml 的 types 一致
+formats:
+  ping: '&8[&bPing&8] &f{ip} &7刷新了服务器列表 &8| &7客户端 &f{version} &8| &7地址 &f{host}'
+  login: '&8[&a登录&8] &f{ip} &7发起登录请求 &8| &7客户端 &f{version} &8| &7地址 &f{host}'
+  server-connect: '&8[&a子服&8] &e{player} &7正在连接子服 &b{server}'
+  server-disconnect: '&8[&7子服&8] &e{player} &7与子服 &b{server} &7的连接已关闭'
+  proxy-disconnect: '&8[&c下线&8] &e{player} &7已断开与代理的连接 &8({ip})'
+  # {reason} 断开原因
+  kick: '&8[&c断开&8] &e{player} &7被断开连接，原因：&f{reason}'
+  # {command} 指令内容（不含 /）
+  command: '&8[&d指令&8] &e{player} &7执行了指令 &f/{command}'
+  read-timeout: '&8[&6超时&8] {who} &7读取超时：{stage}长时间没有发送数据'
+  write-timeout: '&8[&6超时&8] {who} &7写入超时：数据长时间无法发送到{stage}'
+  # {detail} 错误详情
+  corrupted-frame: '&8[&6异常&8] {who} &7数据帧损坏（{stage}）：&f{detail}'
+  bad-packet: '&8[&6异常&8] {who} &7收到无法解析的数据包，可能使用了模组或非原版客户端（{stage}）：&f{detail}'
+  overflow: '&8[&6异常&8] {who} &7数据包长度溢出（{stage}）：&f{detail}'
+  # {error_type} 异常类型  {error} 异常信息
+  network-error: '&8[&6网络&8] {who} &7网络连接异常（{stage}）：&f{error} &8({error_type})'
+  exception: '&8[&c错误&8] {who} &7处理连接时出错（{stage}）：&f{detail}'
+  # {packets} 每秒数据包数  {bytes} 每秒字节数
+  packet-limit: '&8[&c限流&8] {who} &7发包过快已被断开：每秒 &f{packets} &7个包、&f{bytes} &7字节'
+  no-client: '&8[&6子服&8] &e{player} &7的子服连接已建立，但玩家已经离线'
+  other-connect: '&8[&7连接&8] &f{raw} &7已建立连接'
+  other-disconnect: '&8[&7连接&8] &f{raw} &7的连接已关闭'
+
+# {who} 的写法，按连接类型选择
+who:
+  # 握手/登录阶段，尚未得知玩家名
+  initial: '&f{ip}'
+  # 握手/登录阶段，已得知玩家名
+  initial-named: '&e{player} &8(&f{ip}&8)'
+  # 玩家与代理之间的连接
+  player: '&e{player}'
+  # 玩家与子服之间的连接
+  downstream: '&e{player} &8↔ &b{server}'
+  # 正在连接子服
+  connector: '&e{player} &8→ &b{server}'
+  unknown: '&f{raw}'
+
+# {stage} 的写法
+stage:
+  initial: '握手/登录阶段'
+  player: '玩家客户端'
+  downstream: '子服'
+  connector: '正在连接的子服'
+  unknown: '连接'
+
+# 无法确定时显示的内容
+unknown-version: '未知版本'
+unknown-value: '-'
+
+# 详情中的十六进制数据会解码为可读文本预览，{text} 为解码结果
+hex-preview: '&8[内容: &7{text}&8]'
+
+# 无参数异常的说明
+details:
+  decode: '无法解码数据包'
+  unhandled: '未处理的异常'
+  nested: '处理异常时再次出错'
+
+# 折叠汇总
+#   {key} 来源（IP 或玩家名）  {count} 被折叠的条数  {seconds} 统计时长  {label} 日志类型名称
+fold-summary: '&8[折叠] &f{key} &7在 &e{seconds} &7秒内又产生了 &e{count} &7条「{label}」'
+#   {keys} 来源数量
+flood-summary: '&8[折叠] &7{seconds} 秒内另有 &e{keys} &7个来源产生了 &e{count} &7条「{label}」，因来源过多已合并'
+
+labels:
+  ping: '服务器列表 Ping'
+  login: '登录请求'
+  server-connect: '连接子服'
+  server-disconnect: '子服断开'
+  proxy-disconnect: '玩家下线'
+  kick: '断开连接'
+  command: '执行指令'
+  read-timeout: '读取超时'
+  write-timeout: '写入超时'
+  corrupted-frame: '数据帧损坏'
+  bad-packet: '异常数据包'
+  overflow: '数据包溢出'
+  network-error: '网络异常'
+  exception: '连接错误'
+  packet-limit: '发包超限'
+  no-client: '子服连接无玩家'
+  other-connect: '连接建立'
+  other-disconnect: '连接关闭'
+  system: '系统日志'
+
+# 错误信息与断开原因中的英文片段替换，按顺序逐条替换（区分大小写）
+errors:
+  - { from: 'Unexpected packet received during server login process!', to: '连接子服时收到非预期的数据包' }
+  - { from: 'Unexpected packet received during login process!', to: '登录阶段收到非 Minecraft 数据包（常见于端口扫描或 HTTP 访问）' }
+  - { from: 'Unexpected packet received during ping process!', to: 'Ping 阶段收到非预期的数据包' }
+  - { from: 'No more bytes reading varint', to: '读取 VarInt 时数据不足' }
+  - { from: 'length wider than 21-bit', to: '数据长度超过 21 位上限' }
+  - { from: 'recvAddress(..) failed: ', to: '' }
+  - { from: 'readAddress(..) failed: ', to: '' }
+  - { from: 'writeAddress(..) failed: ', to: '' }
+  - { from: 'finishConnect(..) failed: ', to: '' }
+  - { from: 'Connection reset by peer', to: '连接被对方重置' }
+  - { from: 'An existing connection was forcibly closed by the remote host', to: '远程主机强制关闭了连接' }
+  - { from: 'Broken pipe', to: '连接已中断' }
+  - { from: 'Connection refused', to: '连接被拒绝' }
+  - { from: 'Connection timed out', to: '连接超时' }
+  - { from: 'No route to host', to: '无法连接到主机' }
+  - { from: 'Could not connect to a default or fallback server. Incorrectly configured address/port/firewall?', to: '无法连接到默认或备用子服，请检查子服地址、端口与防火墙' }
+  - { from: 'Could not connect to a default or fallback server, please try again later:', to: '无法连接到默认或备用子服，请稍后再试：' }
+  - { from: 'Could not connect to target server, you have been moved to a fallback server.', to: '无法连接目标子服，已将你移到备用子服' }
+  - { from: 'Server is not reachable', to: '子服无法连接' }
+  - { from: 'Outdated client! Please use', to: '客户端版本过旧，请使用' }
+  - { from: 'Outdated server! I''m still on', to: '服务器版本较旧，当前支持' }
+  - { from: 'You are not whitelisted on this server!', to: '你不在此服务器的白名单中' }
+  - { from: 'You logged in from another location', to: '你的账号在其他地方登录' }
+  - { from: 'Already connected to this proxy!', to: '已经连接到此代理' }
+  - { from: 'Server is full!', to: '服务器已满' }
+  - { from: 'Server closed', to: '服务器已关闭' }
+  - { from: 'Proxy restarting.', to: '代理端正在重启' }
+  - { from: 'Quitting', to: '退出' }
+
+# 系统日志汉化，按顺序匹配第一条命中的规则
+#   match  与 BungeeCord 的原始模板完全一致，{0} {1} 为参数
+#   prefix 以此开头，开头部分替换为 text，其余保留
+#   regex  正则匹配整条日志，text 中用 $1 $2 引用分组
+# 可以照此格式补充其他英文日志
+system:
+  - { match: 'Listening on {0}', text: '正在监听 {0}' }
+  - { match: 'Started query on {0}', text: '查询服务已启动：{0}' }
+  - { match: 'Closing listener {0}', text: '正在关闭监听器 {0}' }
+  - { match: 'Closing pending connections', text: '正在关闭等待中的连接' }
+  - { match: 'Disconnecting {0} connections', text: '正在断开 {0} 个玩家连接' }
+  - { match: 'Saving reconnect locations', text: '正在保存玩家重连位置' }
+  - { match: 'Disabling plugins', text: '正在停用插件' }
+  - { match: 'Closing IO threads', text: '正在关闭网络线程' }
+  - { match: 'Thank you and goodbye', text: '代理端已关闭，再见' }
+  - { match: 'Loaded plugin {0} version {1} by {2}', text: '已加载插件 {0}，版本 {1}，作者 {2}' }
+  - { match: 'Enabled plugin {0} version {1} by {2}', text: '已启用插件 {0}，版本 {1}，作者 {2}' }
+  - { match: '[{0}] Loading {1} libraries... please wait', text: '[{0}] 正在加载 {1} 个依赖库，请稍候…' }
+  - { match: '[{0}] Loaded library {1}', text: '[{0}] 已加载依赖库 {1}' }
+  - { match: 'Failed to enable {0}', text: '启用插件 {0} 失败' }
+  - { match: '{0} (required by {1}) is unavailable', text: '缺少前置插件 {0}（{1} 需要它）' }
+  - { match: 'Circular dependency detected: {0}', text: '检测到插件循环依赖：{0}' }
+  - { match: 'Could not initialize LibraryLoader (missing dependencies?)', text: '无法初始化依赖库加载器（可能缺少依赖）' }
+  - { match: 'Method {0} in class {1} annotated with {2} does not have single argument', text: '类 {1} 中带有 {2} 注解的方法 {0} 必须只有一个参数' }
+  - { match: 'Event {0} took {1}ms to process!', text: '事件 {0} 处理耗时 {1} 毫秒！' }
+  - { match: 'Plugin listener {0} took {1}ms to process event {2}!', text: '插件监听器 {0} 处理事件 {2} 耗时 {1} 毫秒！' }
+  - { match: 'Forced host server {0} is not defined', text: '强制主机指向的子服 {0} 不存在' }
+  - { match: 'Using mbed TLS based native cipher.', text: '使用基于 mbed TLS 的原生加密' }
+  - { match: 'Using standard Java JCE cipher.', text: '使用标准 Java JCE 加密' }
+  - { match: 'Not on Windows, attempting to use enhanced EpollEventLoop', text: '当前不是 Windows 系统，尝试启用 Epoll 网络模型' }
+  - { match: 'Epoll is working, utilising it!', text: 'Epoll 可用，已启用' }
+  - { match: 'Epoll is not working, falling back to NIO: {0}', text: 'Epoll 不可用，回退到 NIO：{0}' }
+  - { match: 'Not on Windows, attempting to use enhanced IOUringEventLoopGroup', text: '当前不是 Windows 系统，尝试启用 io_uring 网络模型' }
+  - { match: 'io_uring is enabled and working, utilising it! (experimental feature)', text: 'io_uring 可用，已启用（实验性功能）' }
+  - { match: 'io_uring is not working: {0}', text: 'io_uring 不可用：{0}' }
+  - { match: 'Using PROXY protocol for listener {0}, please ensure this listener is adequately firewalled.', text: '监听器 {0} 已启用 PROXY 协议，请确保该端口受到防火墙保护' }
+  - { match: 'Since PROXY protocol is in use, internal connection throttle has been disabled.', text: '由于启用了 PROXY 协议，内置的连接频率限制已关闭' }
+  - { match: 'MinecraftForge support is currently unmaintained and may have unresolved issues. Please use at your own risk.', text: 'MinecraftForge 支持目前无人维护，可能存在未解决的问题，请自行承担风险' }
+  - { match: 'Memory addresses are not available in direct buffers', text: '直接缓冲区不支持内存地址访问' }
+  - { match: 'Error pinging remote server', text: 'Ping 子服时出错' }
+  - { match: 'Could not load server icon', text: '无法加载服务器图标' }
+  - { match: 'Could not save config', text: '无法保存配置文件' }
+  - { match: 'Could not save reconnect locations', text: '无法保存玩家重连位置' }
+  - { match: 'Could not load reconnect locations, resetting them', text: '无法读取玩家重连位置，已重置' }
+  - { match: 'Could not load custom messages.properties', text: '无法加载自定义 messages.properties' }
+  - { match: 'Could not close listen thread', text: '无法关闭监听线程' }
+  - { match: 'Couldn''t detect bungee version. Custom build?', text: '无法检测 BungeeCord 版本，可能是自行编译的版本' }
+  - { prefix: 'Could not bind to host ', text: '无法绑定地址 ' }
+  - { prefix: 'Exception disabling plugin ', text: '停用插件时出错：' }
+  - { prefix: 'Could not load plugin from file ', text: '无法从文件加载插件：' }
+  - { prefix: 'Exception encountered when loading plugin: ', text: '加载插件时出现异常：' }
+  - { prefix: 'Error loading plugin ', text: '加载插件出错：' }
+  - { prefix: 'Error in dispatching command: ', text: '执行指令时出错：' }
+  - { regex: '^Error authenticating (.+) with minecraft\.net$', text: '玩家 $1 正版验证失败（无法连接 minecraft.net）' }
+  - { regex: '^Enabled BungeeCord version (.+)$', text: '已启动 BungeeCord，版本 $1' }
+  # Waterfall / FlameCord 等分支额外输出的日志
+  - { regex: '^Error occurred processing connection for (\S+) (\S+) : (.*)$', text: '玩家 $1 连接子服失败（$2）：$3' }
+  - { regex: '^Discovered module: ModuleSpec\(name=([^,]+),.*$', text: '发现模块：$1' }
+  - { regex: '^Attempting to update plugin from (\S+) to (.+)$', text: '尝试将模块从 $1 更新到 $2' }
+  - { regex: '^Attempting to Jenkins download module (\S+) v(\S+)$', text: '正在下载模块 $1（构建 $2）' }
+  - { prefix: 'Failed to download: ', text: '下载失败：' }
+  - { match: 'Download complete', text: '下载完成' }
+
+# /miaochinesebc 指令
+command:
+  prefix: '&b&lMiaoChineseBC &7» '
+  help:
+    - '&e/miaochinesebc reload &8- &7重载配置'
+    - '&e/miaochinesebc status &8- &7查看折叠统计'
+  reloaded: '&a配置文件重载完成。'
+  reload-failed: '&c重载失败：{error}，已保留原配置。'
+  # {keys} 正在折叠的来源数  {pending} 尚未汇总的条数  {total} 本次启动以来折叠的总条数  {seconds} 折叠窗口
+  status: '&7折叠窗口 &e{seconds} &7秒，正在跟踪 &e{keys} &7个来源，待汇总 &e{pending} &7条，本次启动共折叠 &e{total} &7条。'
+  enabled: '已接管 BungeeCord 控制台日志：汉化 {translate}，折叠窗口 {seconds} 秒'
+  state-on: '开启'
+  state-off: '关闭'

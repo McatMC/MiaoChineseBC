@@ -1,0 +1,66 @@
+# ==========================================================
+#  MiaoChineseBC ${project.version} - 连接日志折叠与控制台汉化
+#  提示文本与汉化内容见 messages.yml
+#  修改后执行 /miaochinesebc reload 生效
+# ==========================================================
+
+# 是否把 BungeeCord 核心输出的日志改写为中文；false 时保留英文原文，折叠仍然生效
+translate: true
+
+# 是否保留颜色；面板或日志显示 § 乱码时设为 false
+colors: true
+
+# 写入 logs/proxy.log 时是否去掉 § 颜色代码（控制台仍显示颜色）；对所有写入日志文件的内容生效
+plain-file-log: true
+
+# 异常详情最大长度，超出部分以 … 省略
+detail-max-length: 160
+
+fold:
+  # 折叠窗口（秒）：同一来源的第一条日志正常输出，窗口内的后续同类日志只计数，窗口结束时输出一条汇总
+  # 来源持续刷屏时，每个窗口只输出一条汇总
+  window-seconds: 10
+  # 同时跟踪的来源上限，防止大规模攻击时占用过多内存；超出后新来源直接计入合并汇总
+  max-keys: 5000
+  # 同一类日志在一个窗口内出现的新来源超过此数量时，不再逐条输出，合并为一条汇总；0 为关闭
+  # 用于应对大量不同 IP 同时刷 Ping 或登录请求
+  flood-threshold: 30
+
+# 每种日志的处理方式
+#   show  是否输出（false 时完全隐藏，等同于旧 QuietCord 的过滤）
+#   fold  是否按来源折叠（来源优先取 IP，没有 IP 时取玩家名）
+types:
+  # 刷新服务器列表（需要 BungeeCord config.yml 中 log_pings: true 才会产生）
+  ping:              { show: true, fold: true }
+  # 客户端发起登录请求
+  login:             { show: true, fold: true }
+  # 玩家正在连接子服
+  server-connect:    { show: true, fold: false }
+  # 玩家与子服的连接关闭（换服、下线时都会产生）
+  server-disconnect: { show: true, fold: false }
+  # 玩家断开与代理的连接
+  proxy-disconnect:  { show: true, fold: false }
+  # 玩家被踢出或断开，附带原因
+  kick:              { show: true, fold: false }
+  # 玩家执行指令（log_commands: true 时产生）
+  command:           { show: true, fold: false }
+  # 读取超时 / 写入超时
+  read-timeout:      { show: true, fold: true }
+  write-timeout:     { show: true, fold: true }
+  # 数据帧损坏 / 无法解析的数据包 / 数据包溢出
+  corrupted-frame:   { show: true, fold: true }
+  bad-packet:        { show: true, fold: true }
+  overflow:          { show: true, fold: true }
+  # 网络异常（连接被重置等）
+  network-error:     { show: true, fold: true }
+  # 连接处理时的其他异常（扫描器、HTTP 请求等）
+  exception:         { show: true, fold: true }
+  # 超出发包速率限制
+  packet-limit:      { show: true, fold: true }
+  # 子服连接建立时玩家已离线
+  no-client:         { show: true, fold: false }
+  # 无法识别的连接建立 / 断开
+  other-connect:     { show: true, fold: false }
+  other-disconnect:  { show: true, fold: false }
+  # 启动、关闭、插件加载等系统日志（见 messages.yml 的 system）
+  system:            { show: true, fold: false }
