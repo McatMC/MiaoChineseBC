@@ -115,6 +115,10 @@ types:
 - 关服时最后出现的 `java.util.logging.ErrorManager … NullPointerException` 是 BungeeCord 自身关闭日志文件后产生的，与本插件无关。
 - 更新插件后，旧配置文件不会自动补充新配置项，请对照默认配置手动添加，或删除后重新生成。
 
+## 下载
+
+在 [Releases](https://github.com/McatMC/MiaoChineseBC/releases) 页面下载最新的 `MiaoChineseBC-<版本>.jar`。每次推送的构建产物也可以在 Actions 页面对应的运行记录中下载。
+
 ## 构建
 
 ```
@@ -122,3 +126,7 @@ mvn package
 ```
 
 产物为 `target/MiaoChineseBC-<版本>.jar`。
+
+### 自动发布
+
+GitHub Actions 会在每次推送和 Pull Request 时自动构建。推送到 `main` 时，如果 `pom.xml` 中的版本号还没有对应的 Release，会自动创建 `v<版本>` 标签和 Release 并附上 jar；版本号以 `-SNAPSHOT` 结尾时不发布。发布新版本只需修改 `pom.xml` 中的 `<version>` 并推送。
